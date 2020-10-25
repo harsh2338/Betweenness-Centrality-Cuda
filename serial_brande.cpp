@@ -1,11 +1,11 @@
 #include "graph.h"
 using namespace std;
 
-double *betweennessCentrality(Graph *graph)
+float *betweennessCentrality(Graph *graph)
 {
     int numNodes = graph->getNumNodes();
 
-    double *bc = new double[numNodes]();
+    float *bc = new float[numNodes]();
     vector<int> *predecessor = new vector<int>[numNodes];
 
     double *dependency = new double[numNodes];
@@ -81,18 +81,24 @@ int main()
     clock_t start, end;
     start = clock();
 
-    double *bc = betweennessCentrality(graph);
+    float *bc = betweennessCentrality(graph);
 
     end = clock();
     float time_taken = 1000.0 * (end - start) / (float)CLOCKS_PER_SEC;
-    double maxBetweenness = -1;
+    double maxBetweenness = -1, maxBetweennessNode=-1;
     cout<<"Time taken :"<<time_taken<<"\n";
-    cout<<"Betweenness Centrality for node:\n";
+    //cout<<"Betweenness Centrality for each node:\n";
     for (int i = 0; i < numNodes; i++)
     {
-        maxBetweenness = max(maxBetweenness, bc[i]);
-        cout<<i<<" : "<<bc[i]<<"\n";
+        if(maxBetweenness<bc[i]){
+            maxBetweenness = bc[i];
+            maxBetweennessNode=i;
+        }
+        //cout<<i<<" : "<<bc[i]<<"\n";
     }
-    cout<<maxBetweenness;
+    cout<<"Maximum betweenness centrality : ";
+    cout<<maxBetweenness<<"\n";
+    cout<<"Node with Maximum betweenness centrality : ";
+    cout<<maxBetweennessNode<<"\n";
     return 0;
 }
