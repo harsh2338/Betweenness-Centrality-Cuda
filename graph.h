@@ -6,6 +6,7 @@ public:
 
 	int numNodes, numEdges;
 	int *adjList, *adjListPointers;
+	int *edgeList1, *edgeList2;
 
 	int getNumNodes() {
 		return numNodes;
@@ -26,6 +27,16 @@ public:
 
 	}
 
+	void convertToCOO() {
+		edgeList2 = adjList;
+		edgeList1 = new int[2 * numEdges +1];
+
+		for(int i=0; i <numNodes; ++i) {
+			for(int j=adjListPointers[i]; j<adjListPointers[i+1]; ++j){
+				edgeList1[j] = i;
+			}
+		}
+	}
 	int *getadjList(int node) {
 		return adjList;
 	}
