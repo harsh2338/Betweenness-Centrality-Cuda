@@ -25,6 +25,17 @@ public:
 		for(int i=0; i<=numNodes; i++) 
 			cin >> adjListPointers[i];
 
+		cout<<"Adj Pointers\n";
+		for(int i=0; i<=numNodes; i++) 
+			cout<< adjListPointers[i]<<" ";
+		cout<<"\n";
+
+		cout<<"Adj List\n";
+		for(int i=0; i<(2 * numEdges); i++) 
+			cout<< adjList[i]<<" ";
+		cout<<"\n";
+
+		
 	}
 
 	void convertToCOO() {
@@ -36,6 +47,10 @@ public:
 				edgeList1[j] = i;
 			}
 		}
+		cout<<"Edge List 1\n";
+		for(int i=0; i<(2 * numEdges+1); i++) 
+			cout<< edgeList1[i]<<" ";
+		cout<<"\n";
 	}
 	int *getadjList(int node) {
 		return adjList;
@@ -46,3 +61,4 @@ public:
 	}
 
 };
+

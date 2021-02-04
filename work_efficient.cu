@@ -5,7 +5,7 @@
 
 using namespace std;
 
-__global__ void betweennessCentralityKernel(Graph *graph, double *bwCentrality, int nodeCount,
+__global__ void betweennessCentralityKernel(Graph *graph, double *bc, int nodeCount,
             int *sigma, int *distance, double *dependency, int *Q, int *Qpointers) {
     
     int idx = threadIdx.x;
@@ -107,7 +107,7 @@ __global__ void betweennessCentralityKernel(Graph *graph, double *bwCentrality, 
                 }
                 if (v != s)
                 {
-                    bwCentrality[v] += dependency[v] / 2;
+                    bc[v] += dependency[v] / 2;
                 }
             }
             __syncthreads();
@@ -122,29 +122,29 @@ __global__ void betweennessCentralityKernel(Graph *graph, double *bwCentrality, 
 
 double *betweennessCentrality(Graph *graph, int nodeCount)
 {
-    double *bwCentrality = new double[nodeCount]();
-    double *device_bwCentrality, *dependency;
+    double *bc = new double[nodeCount]();
+    double *device_bc, *dependency;
     int *sigma, *distance, *Q, *Qpointers;
 
-    cudaMalloc((void **)&device_bwCentrality, sizeof(double) * nodeCount);
+    cudaMalloc((void **)&device_bc, sizeof(double) * nodeCount);
     cudaMalloc((void **)&sigma, sizeof(int) * nodeCount);
     cudaMalloc((void **)&distance, sizeof(int) * nodeCount);
     cudaMalloc((void **)&Q, sizeof(int) * (nodeCount +1));
     cudaMalloc((void **)&Qpointers, sizeof(int) * (nodeCount +1));
     cudaMalloc((void **)&dependency, sizeof(double) * nodeCount);
-    cudaMemcpy(device_bwCentrality, bwCentrality, sizeof(double) * nodeCount, cudaMemcpyHostToDevice);
+    cudaMemcpy(device_bc, bc, sizeof(double) * nodeCount, cudaMemcpyHostToDevice);
 
-    betweennessCentralityKernel<<<1, MAX_THREAD_COUNT>>>(graph, device_bwCentrality, nodeCount, sigma, distance, dependency, Q, Qpointers);
+    betweennessCentralityKernel<<<1, MAX_THREAD_COUNT>>>(graph, device_bc, nodeCount, sigma, distance, dependency, Q, Qpointers);
     cudaDeviceSynchronize();
 
-    cudaMemcpy(bwCentrality, device_bwCentrality, sizeof(double) * nodeCount, cudaMemcpyDeviceToHost);
-    cudaFree(device_bwCentrality);
+    cudaMemcpy(bc, device_bc, sizeof(double) * nodeCount, cudaMemcpyDeviceToHost);
+    cudaFree(device_bc);
     cudaFree(sigma);
     cudaFree(dependency);
     cudaFree(distance);
     cudaFree(Q);
     cudaFree(Qpointers);
-    return bwCentrality;
+    return bc;
 }
 
 

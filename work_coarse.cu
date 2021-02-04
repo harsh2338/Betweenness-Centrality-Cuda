@@ -51,6 +51,7 @@ __global__ void betweennessCentralityKernel(Graph *graph, float *bc, int nodeCou
                 sigma[v + (blockIdx.x * nodeCount)] = 0;
             }
             dependency[v + (blockIdx.x * nodeCount)] = 0.0;
+            
         }
         __syncthreads();
         
@@ -194,8 +195,6 @@ int main()
         }
         // cout<<i<<" : "<<bc[i]<<"\n";
     }
-    cout<<"Maximum betweenness centrality : ";
-    cout<<maxBetweenness<<"\n";
     cout<<"Node with Maximum betweenness centrality : ";
     cout<<maxBetweennessNode<<"\n";
 
