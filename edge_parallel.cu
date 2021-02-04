@@ -123,20 +123,20 @@ __global__ void betweennessCentralityKernel(Graph *graph, float *bc, int numNode
 float *betweennessCentrality(Graph *graph, int numNodes)
 {
     float *bc = new float[numNodes]();
-    float *cuda_bc, *dependency;
+    float *device_bc, *dependency;
     int *sigma, *distance;
 
-    cudaMalloc((void **)&cuda_bc, sizeof(float) * numNodes);
+    cudaMalloc((void **)&device_bc, sizeof(float) * numNodes);
     cudaMalloc((void **)&sigma, sizeof(int) * numNodes);
     cudaMalloc((void **)&distance, sizeof(int) * numNodes);
     cudaMalloc((void **)&dependency, sizeof(float) * numNodes);
-    cudaMemcpy(cuda_bc, bc, sizeof(float) * numNodes, cudaMemcpyHostToDevice);
+    cudaMemcpy(device_bc, bc, sizeof(float) * numNodes, cudaMemcpyHostToDevice);
 
-    betweennessCentralityKernel<<<1, MAX_THREAD_COUNT>>>(graph, cuda_bc, numNodes, sigma, distance, dependency);
+    betweennessCentralityKernel<<<1, MAX_THREAD_COUNT>>>(graph, device_bc, numNodes, sigma, distance, dependency);
     cudaDeviceSynchronize();
     
-    cudaMemcpy(bc, cuda_bc, sizeof(float) * numNodes, cudaMemcpyDeviceToHost);
-    cudaFree(cuda_bc);
+    cudaMemcpy(bc, device_bc, sizeof(float) * numNodes, cudaMemcpyDeviceToHost);
+    cudaFree(device_bc);
     cudaFree(sigma);
     cudaFree(dependency);
     cudaFree(distance);
